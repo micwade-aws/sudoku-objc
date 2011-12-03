@@ -1,0 +1,110 @@
+head	1.2;
+access;
+symbols;
+locks
+	mike:1.2; strict;
+comment	@ * @;
+
+
+1.2
+date	2007.04.06.19.27.49;	author mike;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.04.04.21.23.19;	author mike;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@ 
+/* Astar.h
+ *
+ * Michael J Wade 
+ * mike@@iammyownorg.org 
+ * Copyright (c) 2007
+ * 
+ */
+
+#import <stdio.h>
+#import "objc/objc.h"
+#import "objc/Object.h"
+#import "icpak102.h"
+#import "Individual.h"
+
+#define SLOT Gene
+
+@@interface Astar : Object {
+@@public
+	Individual *puzzle;
+	int ni,nj,sub_ni,sub_nj,maxVal;
+	int checkCount,nOpen,nClosed;
+	int initOpen, initClosed, badGuesses;
+	int badGuessFlag, recordStatsFlag;
+	double initC, MU;
+	IOD runStats;
+}
+
+//Setup the parameters of A*
+/********************************************************************* 
+ *Essential
+ * 	These functions will init, free, and run A* search
+ *********************************************************************/
+- initialize: aPuzzle;
+- (int) solve;
+
+/********************************************************************* 
+ * Auxiliary
+ * 	Supporting functions for the A* search algorithm
+ *********************************************************************/
+- (int) isSolved;
+- (int) isValid: (int*)v;
+- scoreOpenSlots;
+- (SLOT*) optimalSlot;
+- (int)h:(SLOT*)slot;
+- (int)g:(SLOT*)slot;
+
+/********************************************************************* 
+ * Parameters
+ * 	Get/Set/Fetch the value of a member variable
+ *********************************************************************/
+- (int) checkCount;
+
+/********************************************************************* 
+ * Reports
+ * 	Printed reports
+ *********************************************************************/
+- recordOn:(IOD)anIOD;
+- printStatsOn:(IOD)anIOD;
+
+@@end
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d30 4
+a34 1
+//Main routine A*
+d37 4
+a40 1
+//Auxiliary Functions
+a46 1
+- recordOn:(IOD)anIOD;
+d48 4
+a51 1
+//Variable Access
+d54 5
+@

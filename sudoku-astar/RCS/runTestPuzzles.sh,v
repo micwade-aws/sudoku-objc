@@ -1,0 +1,44 @@
+head	1.1;
+access;
+symbols;
+locks
+	mike:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2007.04.04.21.23.19;	author mike;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#!/bin/bash
+
+x="../puzzles/p"
+y="0"
+z=".pz"
+datDir="runStats/"
+datExt=".dat"
+
+LIMIT=81
+for((i=0; i <= LIMIT; i++))
+ do
+	if [ $i -lt 10 ]
+	then
+	#	j=`expr "$LIMIT" "-" "$i"`
+		./a.out $x$y$i$z 9 9 3 3 243 
+	else
+	#	j=`expr "$LIMIT" "-" "$i"`
+		./a.out $x$i$z 9 9 3 3 243 
+	fi
+done
+@

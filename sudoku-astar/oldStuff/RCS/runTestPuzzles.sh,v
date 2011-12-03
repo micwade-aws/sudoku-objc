@@ -1,0 +1,65 @@
+head	1.2;
+access;
+symbols;
+locks
+	mwade:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2007.02.27.21.11.26;	author mwade;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.02.26.18.05.05;	author mwade;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial checkin.
+@
+
+
+1.2
+log
+@Updated to use the new command line parameters.
+@
+text
+@#!/bin/bash
+
+x="../puzzles/p"
+y="0"
+z=".pz"
+datDir="runStats/"
+datExt=".dat"
+
+LIMIT=81
+for((i=0; i <= LIMIT; i++))
+ do
+	if [ $i -lt 10 ]
+	then
+	#	j=`expr "$LIMIT" "-" "$i"`
+		./a.out $x$y$i$z 9 9 3 3 243 $datDir$y$i$datExt 
+	else
+	#	j=`expr "$LIMIT" "-" "$i"`
+		./a.out $x$i$z 9 9 3 3 243 $datDir$i$datExt 
+	fi
+done
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 2
+d14 2
+a15 1
+		tail $x$y$i$z | ./a.out -s
+d17 2
+a18 1
+		tail $x$i$z | ./a.out -s
+@

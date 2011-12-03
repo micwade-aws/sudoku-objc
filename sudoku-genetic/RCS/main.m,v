@@ -1,0 +1,124 @@
+head	1.1;
+access;
+symbols;
+locks
+	mwade:1.1; strict;
+comment	@// @;
+
+
+1.1
+date	2007.02.26.18.03.47;	author mwade;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial checkin..
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/* Michael J Wade
+ * mike@@iammyownorg.org
+ * 
+ * main.m
+ * Use GA to solve Sudoku Puzzles.
+ */
+
+#import <stdio.h>
+#import "objc/objc.h"
+#import "icpak102.h"
+
+#import "Individual.h"
+#import "Population.h"
+
+#define CHECKPT {printf("Checkpoint: %s, line %d\n", __FILE__,__LINE__);\
+		fflush(stdout);}
+
+void usage(){
+	printf ("\tGENETIC EVOLTUION\n");
+	printf ("Usage: ./a.out <puzzle> <m> <n> <sm> <sn> <maxFit> <pop. size> <pMut> <pCO>\n");
+	exit(0);
+}
+
+int main(int argc, char *argv[]){
+
+	//SGA Parameters & Pointers
+	id individual, pop;
+	int size,m,n,sm,sn,mf,mr,genCount;
+	int lastMF,mfWatch;
+	double pm,pc;
+	FILE *fp;
+	
+	//Check the inputs
+	if(argc < 10){
+		usage();
+	}else{
+		fp   = fopen(argv[1], "r");
+		m    = atoi(argv[2]);
+		n    = atoi(argv[3]);
+		sm   = atoi(argv[4]);
+		sn   = atoi(argv[5]);
+		mf   = atoi(argv[6]);
+		size = atoi(argv[7]);
+		pm   = atof(argv[8]);
+		pc   = atof(argv[9]);
+	}
+	//Create a new individual from a given puzzle file
+	individual = [  [Individual new] 
+			initialize:fp m:m n:n subm:sm subn:sn maxFit:mf
+		     ];
+	fclose(fp);
+	
+	//Print the unchanged chromosone to show the initial puzzle
+	[individual printOn:(stdout)];
+	[individual printCertainty:stdout];
+	
+	//Setup for genetic evolution using the new individual as a template
+	pop = [Population new];
+	[pop initPop:size with:individual pMutation:pm pCrossover:pc];
+	[individual free]; //don't need to save this template anymore.	
+
+	//Evolve a solution
+	genCount=0;
+	lastMF = mfWatch = 0;
+	while( ([pop maxFit] < mf) && genCount < 16000){
+		
+		if(mfWatch > 20){
+			[pop mutationRate:([pop mutationRate]+0.1)];
+			mfWatch = 0;
+			if([pop mutationRate] > 0.4)
+				[pop mutationRate:0.1];
+		}
+
+
+		//[pop evolve:@@selector(randomSelect)];
+		[pop evolve:@@selector(mostFitIndividual)];
+		//[pop evolve:@@selector(binomialSelect)];
+		//[pop evolve:@@selector(topTwo)];
+		genCount++;
+		//if(!(genCount % 1000))
+			printf("Generation:%d\tAvg.Fit:%3.2f\tMax.Fit:%d\tSum.Fit:%d\tpMut:%f\n",genCount,[pop avgFit],[pop maxFit],[pop sumFit],[pop mutationRate]);
+
+		if(genCount == 1)
+			lastMF = [pop maxFit];
+		else{
+			if(lastMF == [pop maxFit])
+				mfWatch++;
+		}
+		lastMF = [pop maxFit];
+			
+	}
+
+	//Show the results
+	[pop printReportOn:(stdout)];
+
+	[pop free];
+
+	return 0;
+}
+@
