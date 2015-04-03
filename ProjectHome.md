@@ -1,0 +1,1 @@
+This is likely useless to everyone except myself.  If it looks like I have real visitors and interest, then I'll put more of it out there for public consumption.
